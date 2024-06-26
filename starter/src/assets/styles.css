@@ -82,3 +82,23 @@ button:hover {
     border: 1px solid #ccc;
     vertical-align: middle
 }
+
+/* added css */
+
+#products{
+    #products_cherry {
+        background: lightgray;
+        padding: 10px;
+        margin: 5px;
+    }
+    #products_strawberry {
+        background: lightgray;
+        padding: 10px;
+        margin: 5px;
+    }
+    #products_orange {
+        background: lightgray;
+        padding: 10px;
+        margin: 5px;
+    }
+}

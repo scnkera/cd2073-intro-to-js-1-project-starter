@@ -15,7 +15,33 @@
    - strawberry.jpg by Allec Gomes
 */
 
+const products = [
+  {
+      name: "Carton of Cherries",
+      price: 4,
+      quantity: 0,
+      productId: 101,
+      image: "../images/cherry.jpg"
+  },
+  {
+      name: "Carton of Strawberries",
+      price: 5,
+      quantity: 0,
+      productId: 102,
+      image: "../images/strawberry.jpg"
+  },
+  {
+      name: "Bag of Oranges",
+      price: 20,
+      quantity: 0,
+      productId: 103,
+      image: "../images/orange.jpg"
+  }
+];
+
 /* Declare an empty array named cart to hold the items in the cart */
+
+const cart = [];
 
 /* Create a function named addProductToCart that takes in the product productId as an argument
   - addProductToCart should get the correct product based on the productId
@@ -23,10 +49,36 @@
   - if the product is not already in the cart, add it to the cart
 */
 
+function addProductToCart(productId) {
+  const product = products.find(p => p.productId === productId);
+
+  if (product) {
+      const cartProduct = cart.find(p => p.productId === productId);
+
+      if (cartProduct) {
+          cartProduct.quantity += 1;
+      } else {
+          cart.push({ ...product, quantity: 1 });
+      }
+  }
+
+  renderCart();
+}
+
 /* Create a function named increaseQuantity that takes in the productId as an argument
   - increaseQuantity should get the correct product based on the productId
   - increaseQuantity should then increase the product's quantity
 */
+
+function increaseQuantity(productId) {
+  const cartProduct = cart.find(p => p.productId === productId);
+
+  if (cartProduct) {
+      cartProduct.quantity += 1;
+  }
+
+  renderCart();
+}
 
 /* Create a function named decreaseQuantity that takes in the productId as an argument
   - decreaseQuantity should get the correct product based on the productId
@@ -34,11 +86,31 @@
   - if the function decreases the quantity to 0, the product is removed from the cart
 */
 
+function decreaseQuantity(productId) {
+  const cartProduct = cart.find(p => p.productId === productId);
+
+  if (cartProduct) {
+      cartProduct.quantity -= 1;
+
+      if (cartProduct.quantity === 0) {
+          cart = cart.filter(p => p.productId !== productId);
+      }
+  }
+
+  renderCart();
+}
+
 /* Create a function named removeProductFromCart that takes in the productId as an argument
   - removeProductFromCart should get the correct product based on the productId
   - removeProductFromCart should update the product quantity to 0
   - removeProductFromCart should remove the product from the cart
 */
+
+function removeProductFromCart(productId) {
+  cart = cart.filter(p => p.productId !== productId);
+
+  renderCart();
+}
 
 /* Create a function named cartTotal that has no parameters
   - cartTotal should iterate through the cart to get the total cost of all products
@@ -46,7 +118,19 @@
   Hint: price and quantity can be used to determine total cost
 */
 
+function cartTotal() {
+  return cart.reduce((total, product) => total + product.price * product.quantity, 0);
+}
+
 /* Create a function called emptyCart that empties the products from the cart */
+
+function emptyCart() {
+  // Clear the cart array by setting it to an empty array
+  cart.length = 0;
+
+  // Updates cart
+  renderCart();
+}
 
 /* Create a function named pay that takes in an amount as an argument
   - amount is the money paid by customer
@@ -63,6 +147,32 @@
    Run the following command in terminal to run tests
    npm run test
 */
+
+function renderCart() {
+  const cartContainer = document.getElementById('cart-container');
+  cartContainer.innerHTML = ''; // Clear existing cart
+
+  cart.forEach(product => {
+      const productDiv = document.createElement('div');
+      productDiv.innerHTML = `
+          <img src="${product.image}">
+          <p>${product.name}</p>
+          <p>Price: $${product.price}</p>
+          <p>Quantity: ${product.quantity}</p>
+          <button onclick="increaseQuantity(${product.productId})">+</button>
+          <button onclick="decreaseQuantity(${product.productId})">-</button>
+          <button onclick="removeProductFromCart(${product.productId})">Remove</button>
+      `;
+      cartContainer.appendChild(productDiv);
+  });
+
+  updateCartTotal();
+}
+
+function updateCartTotal() {
+  const cartTotalElement = document.getElementById('cart-total');
+  cartTotalElement.textContent = cartTotal().toFixed(2);
+}
 
 module.exports = {
    products,
