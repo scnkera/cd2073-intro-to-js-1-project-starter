@@ -20,28 +20,28 @@ const products = [
       name: "Carton of Cherries",
       price: 4,
       quantity: 0,
-      productId: 101,
-      image: "../images/cherry.jpg"
+      productId: 1,
+      image: "./images/cherry.jpg"
   },
   {
       name: "Carton of Strawberries",
       price: 5,
       quantity: 0,
-      productId: 102,
-      image: "../images/strawberry.jpg"
+      productId: 2,
+      image: "./images/strawberry.jpg"
   },
   {
       name: "Bag of Oranges",
       price: 20,
       quantity: 0,
-      productId: 103,
-      image: "../images/orange.jpg"
+      productId: 3,
+      image: "./images/orange.jpg"
   }
 ];
 
 /* Declare an empty array named cart to hold the items in the cart */
 
-const cart = [];
+let cart = [];
 
 /* Create a function named addProductToCart that takes in the product productId as an argument
   - addProductToCart should get the correct product based on the productId
@@ -126,7 +126,7 @@ function cartTotal() {
 
 function emptyCart() {
   // Clear the cart array by setting it to an empty array
-  cart.length = 0;
+  cart = [];
 
   // Updates cart
   renderCart();
@@ -139,15 +139,23 @@ function emptyCart() {
   Hint: cartTotal function gives us cost of all the products in the cart  
 */
 
-/* Place stand out suggestions here (stand out suggestions can be found at the bottom of the project rubric.)*/
+let totalPaid = 0;
 
+function pay(amount) {
+    // Add the amount paid by the customer to the totalPaid variable
+    totalPaid += amount;
+    
+    // Get the total cost of the items in the cart
+    const totalCost = cartTotal();
+    
+    // Calculate the difference between totalPaid and totalCost
+    const difference = totalPaid - totalCost;
+    
+    // Return the difference (positive if change should be given, negative if balance is due)
+    return difference;
+}
 
-/* The following is for running unit tests. 
-   To fully complete this project, it is expected that all tests pass.
-   Run the following command in terminal to run tests
-   npm run test
-*/
-
+// renders cart items
 function renderCart() {
   const cartContainer = document.getElementById('cart-container');
   cartContainer.innerHTML = ''; // Clear existing cart
@@ -171,8 +179,50 @@ function renderCart() {
 
 function updateCartTotal() {
   const cartTotalElement = document.getElementById('cart-total');
-  cartTotalElement.textContent = cartTotal().toFixed(2);
+  const total = cartTotal();
+  cartTotalElement.textContent = 'Total: $' + total.toFixed(2);
 }
+
+
+function handlePayment() {
+  const cashReceived = parseFloat(document.getElementById('cash-received').value);
+  const change = pay(cashReceived);
+  const receiptElement = document.getElementById('receipt');
+  
+  if (change >= 0) {
+      receiptElement.textContent = `Payment accepted. Change: $${change.toFixed(2)}`;
+  } else {
+      receiptElement.textContent = `Insufficient funds. Remaining balance: $${Math.abs(change).toFixed(2)}`;
+  }
+}
+
+ // Function to render products
+ function renderProducts() {
+  const productsContainer = document.getElementsByClassName('products-container');
+  productsContainer.innerHTML = '';
+
+  products.forEach(product => {
+      const productDiv = document.createElement('div');
+      productDiv.innerHTML = `
+          <img src="${product.image}" alt="${product.name}">
+          <p>${product.name}</p>
+          <p>Price: $${product.price}</p>
+          <button onclick="addProductToCart(${product.productId})">Add to Cart</button>
+      `;
+      productsContainer.appendChild(productDiv);
+  });
+}
+
+renderProducts();
+renderCart();
+
+/* Place stand out suggestions here (stand out suggestions can be found at the bottom of the project rubric.)*/
+
+/* The following is for running unit tests. 
+   To fully complete this project, it is expected that all tests pass.
+   Run the following command in terminal to run tests
+   npm run test
+*/
 
 module.exports = {
    products,
