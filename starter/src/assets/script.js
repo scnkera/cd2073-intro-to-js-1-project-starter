@@ -140,7 +140,7 @@ function renderCart() {
       // console.log(productDiv);
   });
 
-  console.log(cart)
+  console.log(cartContainer);
 
   updateCartTotal();
 }
@@ -155,11 +155,20 @@ function cartTotal() {
 }
 
 /* Create a function called emptyCart that empties the products from the cart */
-function emptyCart() {
-  // Clear the cart array by setting it to an empty array
-  cart = [];
 
-  // Updates cart
+// function emptyCart() {
+//   // Clear the cart array by setting it to an empty array
+//   cart = [];
+
+//   // Updates cart
+//   renderCart();
+// }
+function emptyCart() {
+
+  cart = cart.filter(p => p.productId === 3);
+  cart = cart.filter(p => p.productId === 2);
+  cart = cart.filter(p => p.productId === 1);
+
   renderCart();
 }
 
@@ -181,40 +190,45 @@ function pay(amount) {
 }
 
 function handlePayment() {
-  const cashReceived = parseFloat(document.getElementsByClassName('received').value);
+  const cashReceivedElement = document.querySelector('.received'); // Correctly select the element
+  const cashReceived = parseFloat(cashReceivedElement.value); // Get the value from the selected element
   const change = pay(cashReceived);
   const receiptElement = document.getElementById('receipt');
 
-  if (change >= 0) {
-      receiptElement.textContent = `Payment accepted. Change: $${change.toFixed(2)}`;
+  if (!isNaN(cashReceived)) { // Check if cashReceived is a valid number
+    if (change >= 0) {
+        receiptElement.textContent = `Payment accepted. Change: $${change.toFixed(2)}`;
+    } else {
+        receiptElement.textContent = `Insufficient funds. Remaining balance: $${Math.abs(change).toFixed(2)}`;
+    }
   } else {
-      receiptElement.textContent = `Insufficient funds. Remaining balance: $${Math.abs(change).toFixed(2)}`;
+    receiptElement.textContent = `Please enter a valid number.`;
   }
 }
 
 
-//  // Function to render products
-//  function renderProducts() {
-//   const productsContainer = document.getElementsByClassName('products');
-//   productsContainer.innerHTML = '';
+ // Function to render products
+ function renderProducts() {
+  const productsContainer = document.querySelector('.products');
+  productsContainer.innerHTML = '';
 
-//   products.forEach(product => {
-//       const productDiv = document.createElement('div');
-//       console.log(productDiv);
-//       productDiv.innerHTML = `
-//           <img src="${product.image}" alt="${product.name}">
-//           <p>${product.name}</p>
-//           <p>Price: $${product.price}</p>
-//           <button onclick="addProductToCart(${product.productId})">Add to Cart</button>
-//       `;
-//       console.log(cartContainer);
-//       productsContainer.appendChild(productDiv);
-//       console.log(productDiv);
-//   });
-// }
+  products.forEach(product => {
+      const productDiv = document.createElement('div');
+      console.log(productDiv);
+      productDiv.innerHTML = `
+          <img src="${product.image}" alt="${product.name}">
+          <p>${product.name}</p>
+          <p>Price: $${product.price}</p>
+          <button onclick="addProductToCart(${product.productId})">Add to Cart</button>
+      `;
+      console.log(cartContainer);
+      productsContainer.appendChild(productDiv);
+      console.log(productDiv);
+  });
+}
 
-// renderProducts();
-// renderCart();
+renderProducts();
+renderCart();
 
 /* Place stand out suggestions here (stand out suggestions can be found at the bottom of the project rubric.)*/
 
